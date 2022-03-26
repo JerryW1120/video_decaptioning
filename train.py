@@ -10,7 +10,7 @@ import numpy as np
 from utils import AverageMeter, calculate_accuracy, tensor2img, DxDy
 import scoring
 from loss import pixel_bce_with_logits
-from scipy.misc import imsave
+# from scipy.misc import imsave
 from PIL import Image, ImageDraw
 
 import pytorch_ssim
@@ -20,7 +20,7 @@ from pytorch_misc import clip_grad_norm
 LAMBDA_DICT = {'valid': 1.0, 'hole': 6.0, 'tv': 0.1, 'prc': 0.05, 'style': 120.0}
 
 def train_epoch(epoch, data_loader, model, criterion, optimizer, opt,
-                epoch_logger, batch_logger, viz, train_lot, netD=None, optimizerD=None,
+                epoch_logger, batch_logger, netD=None, optimizerD=None,
                 criterion2=None, netG=None, optimizerG=None, criterion3=None):
     print('train at epoch {}'.format(epoch))
     model.train()
@@ -63,9 +63,11 @@ def train_epoch(epoch, data_loader, model, criterion, optimizer, opt,
             targets = targets - inputs[:,:,4:5,:,:]
 
         if not opt.no_cuda:
-            targets = targets.cuda(async=True)
+            # targets = targets.cuda(async=True)
+            targets = targets.cuda()
             targets = Variable(targets)
-            inputs = inputs.cuda(async=True)
+            # inputs = inputs.cuda(async=True)
+            inputs = inputs.cuda()
             if opt.two_step:
                 netG.cuda()
             if opt.use_gan:
@@ -372,17 +374,17 @@ def train_epoch(epoch, data_loader, model, criterion, optimizer, opt,
         else:
             pass
         
-        if opt.visdom:                
-            if (i+1)%(int(len(data_loader)//10)) == 0:
-                if opt.grad or opt.ssim:
-                    dssim = (1.0-losses_ssim.avg)*0.5
-                    if opt.two_step:
-                        viz.line(X=torch.ones((1,7)).cpu()*(j+10*(epoch-1)), Y=torch.Tensor( [[losses_img.avg*50, losses_grad.avg*100, dssim*100, psnrs1.avg, mses1.avg*1000,psnrs2.avg, mses2.avg*1000]]), win=train_lot, update='append')
-                    else:
-                       viz.line(X=torch.ones((1,5)).cpu()*(j+10*(epoch-1)), Y=torch.Tensor( [[losses_img.avg*1000, losses_grad.avg*1000, dssim*100, psnrs1.avg, mses1.avg*1000]]), win=train_lot, update='append')
-                else:
-                    viz.line(X=torch.ones((1,3)).cpu()*(j+10*(epoch-1)), Y=torch.Tensor( [[losses_img.avg*100, psnrs.avg, mses.avg*100]]), win=train_lot, update='append')
-                j+=1  
+        # if opt.visdom:                
+        #     if (i+1)%(int(len(data_loader)//10)) == 0:
+        #         if opt.grad or opt.ssim:
+        #             dssim = (1.0-losses_ssim.avg)*0.5
+        #             if opt.two_step:
+        #                 viz.line(X=torch.ones((1,7)).cpu()*(j+10*(epoch-1)), Y=torch.Tensor( [[losses_img.avg*50, losses_grad.avg*100, dssim*100, psnrs1.avg, mses1.avg*1000,psnrs2.avg, mses2.avg*1000]]), win=train_lot, update='append')
+        #             else:
+        #                viz.line(X=torch.ones((1,5)).cpu()*(j+10*(epoch-1)), Y=torch.Tensor( [[losses_img.avg*1000, losses_grad.avg*1000, dssim*100, psnrs1.avg, mses1.avg*1000]]), win=train_lot, update='append')
+        #         else:
+        #             viz.line(X=torch.ones((1,3)).cpu()*(j+10*(epoch-1)), Y=torch.Tensor( [[losses_img.avg*100, psnrs.avg, mses.avg*100]]), win=train_lot, update='append')
+        #         j+=1  
 
     # --------------------------------------------------------------------------
 

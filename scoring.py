@@ -2,17 +2,17 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 import json
-from skimage.measure import compare_ssim as ssim,compare_mse,compare_psnr
+from skimage.metrics import structural_similarity as ssim
 import numpy as np
 import argparse
 import glob
 #import data_manager
 
-def resize(inp,sz = 128):
-    return imresize(inp,(sz,sz))[:,:,:3]
+# def resize(inp,sz = 128):
+#     return imresize(inp,(sz,sz))[:,:,:3]
 
-def PSNR(ximg,yimg):
-    return compare_psnr(ximg,yimg,data_range=1)
+# def PSNR(ximg,yimg):
+#     return compare_psnr(ximg,yimg,data_range=1)
 
 def DSSIM(y,t,value_range=1):
     n_dims, dims = len(y.shape),y.shape
@@ -34,8 +34,8 @@ def DSSIM(y,t,value_range=1):
                 ))/2 for ty, tt in zip(y,t)]
     return dssim
 
-def MSE(x,y):
-	return compare_mse(x,y)
+# def MSE(x,y):
+# 	return compare_mse(x,y)
 
 '''def Evaluate(files_gt, files_pred, methods = [PSNR,MSE,DSSIM]):
     score = {}

@@ -5,14 +5,14 @@ import time
 import os
 import sys
 import json
-from skimage.measure import compare_ssim as ssim,compare_mse,compare_psnr
+from skimage.metrics import structural_similarity as ssim
 from utils import AverageMeter, tensor2img, DxDy
 from data_manager import createVideoClip
 from poissonblending import blend
 import numpy as np
 import cv2
 import pdb
-from scipy.misc import imsave
+# from scipy.misc import imsave
 
 def calculate_video_results(output_buffer, video_id, test_results, class_names):
     video_outputs = torch.stack(output_buffer)

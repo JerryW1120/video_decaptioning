@@ -1,7 +1,7 @@
 from __future__ import print_function, division
 import os
 import sys
-import subprocess
+from subprocess import call
 import pdb
 
 def class_process(dir_path, dst_dir_path, class_name):
@@ -21,9 +21,9 @@ def class_process(dir_path, dst_dir_path, class_name):
     video_file_path = os.path.join(dir_path, file_name)
 
     try:
-      if os.path.exists(dst_directory_path):
+      if os.path.exists(dst_directory_path): 
         if not os.path.exists(os.path.join(dst_directory_path, 'image_00001.png')):
-          subprocess.call('rm -r \"{}\"'.format(dst_directory_path), shell=True)
+          call('rm -r \"{}\"'.format(dst_directory_path), shell=True)
           print('remove {}'.format(dst_directory_path))
           os.mkdir(dst_directory_path)
         else:
@@ -33,14 +33,15 @@ def class_process(dir_path, dst_dir_path, class_name):
     except:
       print(dst_directory_path)
       continue
-    cmd = 'ffmpeg -i \"{}\" -vf scale=128:128 \"{}/image_%05d.png\"'.format(video_file_path, dst_directory_path)
+    cmd = 'ffmpeg.exe -i {} -vf scale=128:128 {}\image_%05d.png'.format(video_file_path, dst_directory_path)
     print(cmd)
-    subprocess.call(cmd, shell=True)
+    # call(cmd, shell=True)
+    call(f'ffmpeg.exe -i {video_file_path} -vf scale=128:128 {dst_directory_path}\image_%05d.png')
     print('\n')
 
 if __name__=="__main__":
-  dir_path = sys.argv[1]
-  dst_dir_path = sys.argv[2]
+  dir_path = 'F:\\train\Y'
+  dst_dir_path = 'E:\software\\finalshell\\temp\edit\\train_png\Y'
 
   for class_name in os.listdir(dir_path):
     class_process(dir_path, dst_dir_path, class_name)
